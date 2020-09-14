@@ -21,7 +21,12 @@
  *  _.chunk(["a", "b", "c", "d"], 3) => [["a", "b", "c"], ["d"]]
  *  _.chunk(["a", "b", "c"]) => [["a"], ["b"], ["c"]]
  * */
-export function chunk() {
+export function chunk<T>(arr: T[], size: number=1): T[][] {
+    const ret: T[][] = [];
+    for (let i = 0; i < arr.length; i+=size) {
+        ret.push(arr.slice(i, i + size))
+    }
+    return ret;
 }
 
 /**
@@ -37,7 +42,11 @@ export function chunk() {
  * _.compact([1, 0, 2, 0, 3]) => [1, 2, 3]
  * _.compact([1, undefined, NaN, null, 0, 2, 3]) => [1, 2, 3]
  */
-export function compact() {
+export function compact(arr: any[]): any[] {
+    const ret: any[] = []
+    for (const i of arr)
+        if (i) ret.push(i)
+    return ret
 }
 
 /**
@@ -48,7 +57,12 @@ export function compact() {
  *  _.head([1, 2, 3]) => 1
  *  _.head([]) => undefined
  */
-export function head() {
+export function head<T>(arr: T[]): T {
+    return arr[0]
+    // let ret;
+    // if (arr.length>0)
+    //     ret = arr[0]
+    // return ret
 }
 
 /**
@@ -59,7 +73,9 @@ export function head() {
  *  _.initial<number>([1, 2, 3]) => [1, 2]
  *
  */
-export function initial() {
+export function initial<T>(arr: T[]): T[] {
+    if ( arr.length === 0 ) return []
+    return arr.slice(0, arr.length-1)
 }
 
 /**
@@ -71,7 +87,8 @@ export function initial() {
  * _.last([]) => undefined
  *
  */
-export function last() {
+export function last<T>(arr: T[]): T {
+    return arr[arr.length-1]
 }
 
 /**
@@ -84,7 +101,8 @@ export function last() {
  * _.drop([1, 2, 3, 4], 2) => [3, 4]
  * _.drop([1, 2, 3, 4]) => [2, 3, 4]
  */
-export function drop() {
+export function drop<T>(arr: T[], n = 1): T[] {
+    return arr.slice(n, arr.length)
 }
 
 /**
@@ -97,7 +115,8 @@ export function drop() {
  * _.dropRight([1, 2, 3, 4]) => [1, 2, 3]
  *
  */
-export function dropRight() {
+export function dropRight(arr: T[], n = 1): T[] {
+    return arr.slice(0, arr.length - n)
 }
 
 interface DropWhilePredicate<T> {
@@ -113,6 +132,9 @@ interface DropWhilePredicate<T> {
 *
 */
 export function dropWhile<T>(collection: Array<T>, predicate: DropWhilePredicate<T>): Array<T> {
+    let i = 0;
+    for (; predicate(collection[i], i, collection); i++ ) {}
+    return collection.slice(i, collection.length)
 }
 
 /**
@@ -124,7 +146,10 @@ export function dropWhile<T>(collection: Array<T>, predicate: DropWhilePredicate
  * _.dropRightWhile([5, 4, 3, 2, 1], value => value < 3) => [5, 4, 3]
  *
  */
-export function dropRightWhile() {
+export function dropRightWhile<T>(arr: Array<T>, predicate: DropWhilePredicate<T>): Array<T> {
+    let i = arr.length - 1;
+    for (; predicate(arr[i], i, arr); i-- ) {}
+    return arr.slice(0, i + 1)
 }
 
 /**
@@ -135,11 +160,15 @@ export function dropRightWhile() {
  * ## Examples
  * _.fill<any>([4, 6, 8, 10], "* ", 1, 3) => [4, "* ", "* ", 10]
  */
-export function fill() {
+export function fill<T>(arr: T[], v: T, start:number, end: number): T[] {
+    const ret = arr.slice(0)
+    for (let i = start; i < end; i++) ret[i] = v
+    return ret
 }
 
 // Here we define an interface for the predicate used in the findIndex function.
-export interface FindIndexPredicate {
+export interface FindIndexPredicate<T> {
+    (v: T): boolean
 }
 
 /**
@@ -155,7 +184,10 @@ export interface FindIndexPredicate {
  * _.findIndex([4, 6, 6, 8, 10], value => value === 6, 2) => 2
  *
  */
-export function findIndex() {
+export function findIndex<T>(arr: T[], p: FindIndexPredicate<T>, start=0): number {
+    let i = start;
+    for (; !p(arr[i]) && i < arr.length; i++ );
+    return i == arr.length? -1 : i;
 }
 
 /**
@@ -170,7 +202,11 @@ export function findIndex() {
  * _.findLastIndex([4, 6, 6, 8, 10], value => value === 6, 1) => 1
  *
  */
-export function findLastIndex() {
+export function findLastIndex<T>(arr: T[], p: FindIndexPredicate<T>, start?:number): number {
+    if (start === undefined) start = arr.length - 1;
+    let i = start;
+    for (; !p(arr[i]) && i > -1; i-- );
+    return i;
 }
 
 /**
@@ -184,7 +220,8 @@ export function findLastIndex() {
  * _.nth<number>([1, 2, 3]) => 1
  *
  */
-export function nth() {
+export function nth<T>(arr: T[], n=0): T {
+    return arr[n]
 }
 
 /**
@@ -194,5 +231,5 @@ export function nth() {
  * // We can also use something called "union types" here.
  * _.zip<string | number | boolean>(["a", "b"], [1, 2], [true, false]) => [["a", 1, true], ["b", 2, false]]
  */
-export function zip() {
+export function zip<T>() {
 }

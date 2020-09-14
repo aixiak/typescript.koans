@@ -4,7 +4,7 @@
   "description": "learn TypeScript the right way",
   "main": "index.js",
   "scripts": {
-    "pretest": "npm install",
+    "_pretest": "npm install",
     "prestart": "npm install",
     "test": "mocha test/*.test.ts",
     "start": "npm run test:watch && npm run lint",
